@@ -1,6 +1,8 @@
 package main
 
-import ()
+import (
+	"reflect"
+)
 
 // TransactionInput
 // txin ∈ TxIn = (txid, ix) ∈ TxId × Ix
@@ -18,14 +20,6 @@ type TransactionOutput struct {
 	c    float64
 }
 
-// UTXO -- unspent transaction outputs
-// utxo ∈ UTxO = txin |→ txout ∈ TxIn |→ TxOut
-
-type UTXO struct {
-	txin  *TransactionInput
-	txout *TransactionOutput
-}
-
 // Block
 // b ∈ Block = tx ∈ P(Tx)
 
@@ -38,9 +32,10 @@ type Block struct {
 
 type Transaction interface {
 	TxId() int
-	UTXOs() []*UTXO
 	TxIns() []*TransactionInput
 	TxOuts() []*TransactionOutput
+	HasTxIn(txin *TransactionInput) bool
+	HasTxOut(txout *TransactionOutput) bool
 }
 
 type transaction struct {
@@ -53,14 +48,38 @@ func (t *transaction) TxId() int {
 	return 0
 }
 
-func (t *transaction) UTXOs() []*UTXO {
-	return
-}
-
 func (t *transaction) TxIns() []*TransactionInput {
 	return t.txins
 }
 
 func (t *transaction) TxOuts() []*TransactionOutput {
 	return t.txouts
+}
+
+func (t *transaction) HasTxIn(txin *TransactionInput) bool {
+	for _, txinX := range t.txins {
+		if reflect.DeepEqual(txinX, txin) {
+			return true
+		}
+	}
+	return false
+}
+
+func (t *transaction) HasTxOut(txout *TransactionOutput) bool {
+	for _, txoutX := range t.txouts {
+		if reflect.DeepEqual(txoutX, txout) {
+			return true
+		}
+	}
+	return false
+}
+
+// Utility functions
+
+func TransactionsToTxOuts(txs []*Transaction) []*TransactionOutput {
+	txouts := []*core.TransactionOutput{}
+	for _, tx := range txs {
+		append(txouts, tx.TxOuts()...)
+	}
+	return txouts
 }
