@@ -1,0 +1,40 @@
+{
+	"addresses": [
+		"0x12345",
+		"0x23456",
+		"0x34567",
+		"0x45678",
+		"0x56789"
+	],
+	"transactions": [{
+		"txid": "tx0",
+		"inputs": [],
+		"outputs": [{
+			"addr": "0x12345",
+			"c": 100.0
+		}]
+	}, {
+		"txid": "tx1",
+		"inputs": [{
+			"txid": "tx0",
+			"ix": 0
+		}],
+		"outputs": [{
+			"addr": "0x23456",
+			"c": 50.0
+		}]
+	}, {
+		"txid": "tx2",
+		"inputs": [{
+			"txid": "tx1",
+			"ix": 0
+		}],
+		"outputs": [{
+			"addr": "0x34567",
+			"c": 75.0
+		}, {
+			"addr": "0x45678",
+			"c": 25.0
+		}]
+	}]
+}
