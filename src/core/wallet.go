@@ -72,6 +72,7 @@ func (w *wallet) ApplyBlock(block []*Transaction) {
 
 // remove pending transactions that have spent transaction t
 func (w *wallet) ApplyPendingTransaction(t *Transaction) {
+	w.pendingTxs = UpdatePendingTxsWithBlock(w.pendingTxs, []*Transaction{t})
 }
 
 // returns balance of a list of UTXOs for a given address

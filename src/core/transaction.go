@@ -66,5 +66,22 @@ func ExtractTxouts(txs []*Transaction) []*Txout {
 }
 
 func UpdatePendingTxsWithBlock(pendingTxs []*Transaction, block []*Transaction) []*Transaction {
-	return pendingTxs
+	// 1. find all inputs to transactions in block
+	// 2. remove pending transactions where inputs spent (inputs in block)
+	blockTxins := ExtractTxins(block)
+
+	pendingTransactionUnspent := []*Transaction{}
+	for _, tx := range pendingTxs {
+		isPendingTxSpent := false
+		for _, blockTxin := range blockTxins {
+			// pending transactions input has been spent
+			if blockTxin.txid == tx.txid {
+				isPendingTxSpent = true
+			}
+		}
+		if isPendingTxSpent == false {
+			pendingTransactionUnspent = append(pendingTransactionUnspent, tx)
+		}
+	}
+	return pendingTransactionUnspent
 }
